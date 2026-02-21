@@ -88,6 +88,9 @@ graph TD
     G --> I[Verify with Employers]
     G --> J[Get Discounts/Rewards]
 
+
+
+
 ### For Event Organizers (Continued)
 
 | Feature | Benefit |
