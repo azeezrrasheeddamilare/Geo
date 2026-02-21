@@ -1,0 +1,218 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
+
+// Get current date for dynamic events
+const now = new Date();
+const oneMonthFromNow = new Date(now);
+oneMonthFromNow.setMonth(now.getMonth() + 1);
+
+const twoDaysAgo = new Date(now);
+twoDaysAgo.setDate(now.getDate() - 2);
+
+const nextWeek = new Date(now);
+nextWeek.setDate(now.getDate() + 7);
+
+// In-memory database with CURRENT DATES
+const events = [
+    {
+        id: 'lagos-tech-summit-2024',
+        name: 'Lagos Tech Summit 2024',
+        lat: 6.5244,
+        lng: 3.3792,
+        radius: 100,
+        startTime: twoDaysAgo.toISOString(), // Started 2 days ago
+        endTime: nextWeek.toISOString(),     // Ends next week
+        active: true,
+        image: 'https://via.placeholder.com/300/4CAF50/ffffff?text=Lagos+Tech+Summit'
+    },
+    {
+        id: 'afro-nation-2024',
+        name: 'Afro Nation Lagos 2024',
+        lat: 6.4244,
+        lng: 3.4192,
+        radius: 200,
+        startTime: now.toISOString(),         // Starts now
+        endTime: oneMonthFromNow.toISOString(),// Ends in 1 month
+        active: true,
+        image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Afro+Nation'
+    },
+    {
+        id: 'olumo-rock-tour',
+        name: 'Olumo Rock Tour',
+        lat: 7.0156,
+        lng: 3.3019,
+        radius: 150,
+        startTime: twoDaysAgo.toISOString(),  // Started 2 days ago
+        endTime: oneMonthFromNow.toISOString(),// Ends in 1 month
+        active: true,
+        image: 'https://via.placeholder.com/300/4A90E2/ffffff?text=Olumo+Rock'
+    }
+];
+
+const claims = [];
+
+// Helper: Calculate distance
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371e3;
+    const φ1 = lat1 * Math.PI/180;
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c;
+}
+
+// Routes
+app.get('/', (req, res) => {
+    res.json({
+        name: 'GeoVerify Nigeria',
+        version: '1.0.0',
+        status: 'running',
+        endpoints: [
+            '/api/events - List all events',
+            '/api/verify-location - Verify event attendance',
+            '/api/claim-nft - Claim NFT',
+            '/api/my-nfts/:wallet - View claimed NFTs',
+            '/dashboard - Web dashboard'
+        ]
+    });
+});
+
+app.get('/api/events', (req, res) => {
+    res.json(events.filter(e => e.active));
+});
+
+app.post('/api/verify-location', (req, res) => {
+    const { lat, lng, eventId, wallet } = req.body;
+    
+    console.log('Verifying:', { lat, lng, eventId, wallet });
+    
+    const event = events.find(e => e.id === eventId);
+    if (!event) {
+        return res.status(404).json({ error: 'Event not found' });
+    }
+    
+    const now = new Date();
+    const start = new Date(event.startTime);
+    const end = new Date(event.endTime);
+    
+    // Debug log
+    console.log('Event dates:', { start: start.toISOString(), end: end.toISOString(), now: now.toISOString() });
+    
+    if (now < start || now > end) {
+        return res.json({
+            valid: false,
+            message: `Event is not currently active. Active from ${start.toLocaleDateString()} to ${end.toLocaleDateString()}`,
+            event: event.name
+        });
+    }
+    
+    const distance = calculateDistance(lat, lng, event.lat, event.lng);
+    const isValid = distance <= event.radius;
+    
+    const alreadyClaimed = claims.some(c => 
+        c.wallet === wallet && c.eventId === eventId
+    );
+    
+    res.json({
+        valid: isValid,
+        distance: Math.round(distance),
+        event: event.name,
+        message: isValid 
+            ? alreadyClaimed 
+                ? 'You already claimed this event!' 
+                : '✅ You are at the event! Ready to claim your NFT.'
+            : `❌ You are ${Math.round(distance)}m away. Need to be within ${event.radius}m.`,
+        canClaim: isValid && !alreadyClaimed,
+        eventImage: event.image
+    });
+});
+
+app.post('/api/claim-nft', async (req, res) => {
+    const { wallet, eventId, lat, lng } = req.body;
+    
+    try {
+        const event = events.find(e => e.id === eventId);
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+        
+        const distance = calculateDistance(lat, lng, event.lat, event.lng);
+        if (distance > event.radius) {
+            return res.status(400).json({ 
+                error: 'Not at event location',
+                distance: Math.round(distance)
+            });
+        }
+        
+        if (claims.some(c => c.wallet === wallet && c.eventId === eventId)) {
+            return res.status(400).json({ error: 'Already claimed' });
+        }
+        
+        // Mock NFT minting
+        const nftResult = {
+            mint: 'GeoNFT_' + Math.random().toString(36).substring(7),
+            name: event.name,
+            transaction: 'tx_' + Date.now()
+        };
+        
+        const claim = {
+            wallet,
+            eventId,
+            claimedAt: new Date().toISOString(),
+            nftAddress: nftResult.mint,
+            lat,
+            lng,
+            eventName: event.name,
+            eventImage: event.image
+        };
+        claims.push(claim);
+        
+        res.json({
+            success: true,
+            message: `🎉 Success! You've claimed your ${event.name} NFT!`,
+            nft: nftResult,
+            claim
+        });
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/my-nfts/:wallet', (req, res) => {
+    const { wallet } = req.params;
+    const userClaims = claims.filter(c => c.wallet === wallet);
+    res.json(userClaims);
+});
+
+// Web dashboard
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Also serve dashboard at root for convenience
+app.get('/dashboard.html', (req, res) => {
+    res.redirect('/dashboard');
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📊 Dashboard: http://localhost:${PORT}/dashboard`);
+    console.log(`🔧 API: http://localhost:${PORT}/`);
+});

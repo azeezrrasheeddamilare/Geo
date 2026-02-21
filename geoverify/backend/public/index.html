@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoVerify Nigeria - Location-Validated NFTs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .nigeria-flag {
+            background: linear-gradient(90deg, #008753 33%, #ffffff 33%, #ffffff 66%, #008753 66%);
+            height: 5px;
+            width: 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            opacity: 0.9;
+        }
+
+        .nav a:hover {
+            opacity: 1;
+        }
+
+        .nav .btn {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero-image {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-image .big-emoji {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 80px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            opacity: 0.8;
+        }
+
+        /* Features */
+        .features {
+            margin-bottom: 80px;
+        }
+
+        .features h2 {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Nigerian Use Cases */
+        .nigeria-section {
+            margin-bottom: 80px;
+        }
+
+        .nigeria-section h2 {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .location-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .location-card .emoji {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        /* Waitlist Section */
+        .waitlist {
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 60px;
+            text-align: center;
+            margin-bottom: 80px;
+            backdrop-filter: blur(10px);
+        }
+
+        .waitlist h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .waitlist p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .waitlist-form {
+            display: flex;
+            gap: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .waitlist-form input,
+        .waitlist-form select {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            outline: none;
+            background: white;
+        }
+
+        .waitlist-form button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .waitlist-form button:hover {
+            background: #45a049;
+        }
+
+        .waitlist-form button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .waitlist-count {
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .location-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav a {
+                margin: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nigeria-flag"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🌍 GeoVerify Nigeria</div>
+            <div class="nav">
+                <a href="#features">Features</a>
+                <a href="#locations">Locations</a>
+                <a href="#waitlist">Join Waitlist</a>
+                <a href="/dashboard" class="btn">Launch Demo →</a>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <div>
+                <h1>Verify Real Attendance on Solana</h1>
+                <p>The first platform that mints NFTs only when you're physically present at Nigerian locations. No fakes. No fraud. Just proof.</p>
+                <div class="hero-buttons">
+                    <a href="#waitlist" class="btn-primary">Join Waitlist</a>
+                    <a href="/dashboard" class="btn-secondary">Try Demo →</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="big-emoji">📍🎨</div>
+                <h3 style="margin-bottom: 10px;">Lagos Tech Summit</h3>
+                <p style="opacity: 0.8;">Claim your attendance NFT</p>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div>
+                <div class="stat-number">₦50B+</div>
+                <div class="stat-label">Lost to ticket fraud yearly</div>
+            </div>
+            <div>
+                <div class="stat-number">13</div>
+                <div class="stat-label">UNESCO Sites in Nigeria</div>
+            </div>
+            <div>
+                <div class="stat-number">200+</div>
+                <div class="stat-label">Universities needing verification</div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="features" id="features">
+            <h2>Why GeoVerify?</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Location Validated</h3>
+                    <p>NFTs only mint when you're physically present. GPS + ZK proofs prevent spoofing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Collectible NFTs</h3>
+                    <p>Each event, tourist site, or graduation creates unique, verifiable collectibles.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI Fraud Detection</h3>
+                    <p>Our AI detects impossible travel patterns and prevents cheating.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Solana Powered</h3>
+                    <p>Less than ₦1 per NFT. Fast enough for busy Lagos events.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Privacy First</h3>
+                    <p>Zero-knowledge proofs verify location without revealing where you are.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🇳🇬</div>
+                    <h3>Built for Nigeria</h3>
+                    <p>Designed for Nigerian events, tourism, and business needs.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nigerian Use Cases -->
+        <div class="nigeria-section" id="locations">
+            <h2>🇳🇬 Nigerian Use Cases</h2>
+            <div class="location-grid">
+                <div class="location-card">
+                    <div class="emoji">🎫</div>
+                    <h4>Lagos Events</h4>
+                    <p>Tech Summit, AfroNation</p>
+                </div>
+                <div class="location-card">
+                    <div class="emoji">⛰️</div>
+                    <h4>Olumo Rock</h4>
+                    <p>Tourist verification</p>
+                </div>
+                <div class="location-card">
+                    <div class="emoji">🦁</div>
+                    <h4>Yankari Reserve</h4>
+                    <p>Wildlife tourism</p>
+                </div>
+                <div class="location-card">
+                    <div class="emoji">🎓</div>
+                    <h4>Universities</h4>
+                    <p>Graduation verification</p>
+                </div>
+                <div class="location-card">
+                    <div class="emoji">🕌</div>
+                    <h4>Religious Sites</h4>
+                    <p>Pilgrimage records</p>
+                </div>
+                <div class="location-card">
+                    <div class="emoji">💼</div>
+                    <h4>Sales Teams</h4>
+                    <p>Client visit proof</p>
+                </div>
+                <div class="location-card">
+                    <div class="emoji">🏛️</div>
+                    <h4>Benin Bronzes</h4>
+                    <p>Museum visitors</p>
+                </div>
+                <div class="location-card">
+                    <div class="emoji">⛺</div>
+                    <h4>NYSC Camps</h4>
+                    <p>Attendance proof</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Waitlist Section -->
+        <div class="waitlist" id="waitlist">
+            <h2>🚀 Join the Waitlist</h2>
+            <p>Be the first to use GeoVerify Nigeria. Get early access, exclusive NFTs, and help shape the future of verification in Nigeria.</p>
+            
+            <div class="waitlist-form">
+                <input type="email" id="email" placeholder="Enter your email" required>
+                <select id="role">
+                    <option value="organizer">Event Organizer</option>
+                    <option value="tourist">Tourist Site</option>
+                    <option value="business">Business</option>
+                    <option value="attendee">Event Attendee</option>
+                    <option value="other">Other</option>
+                </select>
+                <button onclick="joinWaitlist()" id="waitlistBtn">
+                    <span id="btnText">Join Now</span>
+                    <span id="spinner" class="spinner"></span>
+                </button>
+            </div>
+            
+            <div id="successMessage" class="success-message">
+                ✅ Thanks for joining! We'll notify you when we launch.
+            </div>
+            
+            <div class="waitlist-count" id="waitlistCount">
+                📊 <span id="count">47</span> others have joined
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>🌍 GeoVerify Nigeria - Built for Solana Foundation Grant by Superteam Nigeria</p>
+            <p style="margin-top: 20px;">© 2024 GeoVerify. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        let waitlistCount = 47;
+        
+        async function joinWaitlist() {
+            const email = document.getElementById('email').value;
+            const role = document.getElementById('role').value;
+            const btn = document.getElementById('waitlistBtn');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+            const successMsg = document.getElementById('successMessage');
+            
+            if (!email) {
+                alert('Please enter your email');
+                return;
+            }
+            
+            // Show loading
+            btn.disabled = true;
+            btnText.style.display = 'none';
+            spinner.style.display = 'inline-block';
+            
+            try {
+                // Call your API
+                const response = await fetch('/api/waitlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, role })
+                });
+                
+                const data = await response.json();
+                
+                // Hide loading
+                btn.disabled = false;
+                btnText.style.display = 'inline';
+                spinner.style.display = 'none';
+                
+                // Show success
+                successMsg.style.display = 'block';
+                document.getElementById('email').value = '';
+                
+                // Update count if provided
+                if (data.count) {
+                    waitlistCount = data.count;
+                    document.getElementById('count').textContent = waitlistCount;
+                } else {
+                    waitlistCount++;
+                    document.getElementById('count').textContent = waitlistCount;
+                }
+                
+                // Hide success after 5 seconds
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                }, 5000);
+                
+            } catch (error) {
+                btn.disabled = false;
+                btnText.style.display = 'inline';
+                spinner.style.display = 'none';
+                alert('Error joining waitlist. Please try again.');
+            }
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

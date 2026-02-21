@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoVerify Nigeria - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .header .badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .event-list {
+            margin-top: 20px;
+        }
+        
+        .event-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .event-item h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .event-item p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .button:hover {
+            background: #45a049;
+        }
+        
+        .button.secondary {
+            background: #667eea;
+        }
+        
+        .button.secondary:hover {
+            background: #5a67d8;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 60px;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .nft-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .nft-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .nft-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 GeoVerify Nigeria</h1>
+            <p>Verify Real-World Attendance & Earn Geo-NFTs</p>
+            <span class="badge">🇳🇬 Built in Nigeria for Nigeria</span>
+        </div>
+        
+        <div class="grid">
+            <!-- Events Card -->
+            <div class="card">
+                <h3>📅 Active Events</h3>
+                <div id="eventsList" class="event-list">
+                    <div class="loading"></div>
+                </div>
+            </div>
+            
+            <!-- Verify Location Card -->
+            <div class="card">
+                <h3>📍 Verify Attendance</h3>
+                <div class="input-group">
+                    <label>Your Wallet Address</label>
+                    <input type="text" id="wallet" placeholder="Enter your Solana wallet..." value="GeoVerify_User_123">
+                </div>
+                <div class="input-group">
+                    <label>Select Event</label>
+                    <select id="eventSelect" style="width:100%; padding:10px; border-radius:10px; border:2px solid #e0e0e0;">
+                        <option value="">Loading events...</option>
+                    </select>
+                </div>
+                <button class="button" onclick="getLocation()">📍 Get My Location</button>
+                <p id="locationDisplay" style="margin-top:10px; color:#666;"></p>
+                <button class="button secondary" onclick="verifyLocation()" style="margin-top:10px;">✅ Verify Location</button>
+                <div id="verifyResult" class="result-box"></div>
+            </div>
+            
+            <!-- Claim NFT Card -->
+            <div class="card">
+                <h3>🎨 Claim NFT</h3>
+                <button class="button" onclick="claimNFT()" style="background: #FF6B6B;">✨ Claim Your NFT</button>
+                <div id="claimResult" class="result-box"></div>
+            </div>
+        </div>
+        
+        <!-- My NFTs Section -->
+        <div class="card" style="margin-bottom: 30px;">
+            <h3>🎨 My Geo-NFTs</h3>
+            <button class="button secondary" onclick="loadMyNFTs()">Load My Collection</button>
+            <div id="myNFTs" class="nft-grid"></div>
+        </div>
+        
+        <!-- Quick Demo -->
+        <div class="card">
+            <h3>🚀 Quick Demo (Test Without GPS)</h3>
+            <p>Click below to simulate being at an event:</p>
+            <button class="button" onclick="simulateAttendance()">🎯 Simulate Attendance at Lagos Tech Summit</button>
+            <div id="demoResult" class="result-box"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentLocation = null;
+        const API_URL = window.location.origin;
+        
+        // Load events on page load
+        loadEvents();
+        
+        async function loadEvents() {
+            try {
+                const response = await fetch('/api/events');
+                const events = await response.json();
+                
+                // Update events list
+                const eventsList = document.getElementById('eventsList');
+                eventsList.innerHTML = events.map(event => 
+                    '<div class="event-item">' +
+                    '<h4>' + event.name + '</h4>' +
+                    '<p>📍 Location: ' + event.lat + ', ' + event.lng + '</p>' +
+                    '<p>📏 Radius: ' + event.radius + ' meters</p>' +
+                    '<p>⏰ ' + new Date(event.startTime).toLocaleDateString() + ' - ' + new Date(event.endTime).toLocaleDateString() + '</p>' +
+                    '</div>'
+                ).join('');
+                
+                // Update select dropdown
+                const select = document.getElementById('eventSelect');
+                select.innerHTML = events.map(event => 
+                    '<option value="' + event.id + '">' + event.name + '</option>'
+                ).join('');
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+                document.getElementById('eventsList').innerHTML = 'Error loading events';
+            }
+        }
+        
+        function getLocation() {
+            if (!navigator.geolocation) {
+                alert('Geolocation not supported');
+                return;
+            }
+            
+            document.getElementById('locationDisplay').innerHTML = '<span class="loading"></span> Getting location...';
+            
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    currentLocation = {
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    };
+                    document.getElementById('locationDisplay').innerHTML = 
+                        '📍 Your location: ' + currentLocation.lat.toFixed(6) + ', ' + currentLocation.lng.toFixed(6);
+                },
+                err => {
+                    document.getElementById('locationDisplay').innerHTML = '❌ Error: ' + err.message;
+                }
+            );
+        }
+        
+        async function verifyLocation() {
+            const wallet = document.getElementById('wallet').value;
+            const eventId = document.getElementById('eventSelect').value;
+            
+            if (!wallet || !eventId) {
+                alert('Please enter wallet and select event');
+                return;
+            }
+            
+            if (!currentLocation) {
+                alert('Please get your location first');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('verifyResult');
+            resultDiv.innerHTML = '<span class="loading"></span> Verifying...';
+            
+            try {
+                const response = await fetch('/api/verify-location', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        lat: currentLocation.lat,
+                        lng: currentLocation.lng,
+                        eventId: eventId,
+                        wallet: wallet
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.valid && data.canClaim) {
+                    resultDiv.innerHTML = '<div class="success">✅ ' + data.message + '</div>';
+                } else if (data.valid && !data.canClaim) {
+                    resultDiv.innerHTML = '<div class="info">ℹ️ ' + data.message + '</div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ ' + data.message + '</div>';
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+            }
+        }
+        
+        async function claimNFT() {
+            const wallet = document.getElementById('wallet').value;
+            const eventId = document.getElementById('eventSelect').value;
+            
+            if (!wallet || !eventId) {
+                alert('Please enter wallet and select event');
+                return;
+            }
+            
+            if (!currentLocation) {
+                alert('Please get your location first');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('claimResult');
+            resultDiv.innerHTML = '<span class="loading"></span> Claiming your NFT...';
+            
+            try {
+                const response = await fetch('/api/claim-nft', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wallet: wallet,
+                        eventId: eventId,
+                        lat: currentLocation.lat,
+                        lng: currentLocation.lng
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = '<div class="success">' + data.message + '</div>';
+                    loadMyNFTs(); // Refresh collection
+                } else {
+                    resultDiv.innerHTML = '<div class="error">' + (data.error || 'Error claiming') + '</div>';
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+            }
+        }
+        
+        async function loadMyNFTs() {
+            const wallet = document.getElementById('wallet').value;
+            
+            if (!wallet) {
+                alert('Please enter wallet address');
+                return;
+            }
+            
+            const nftsDiv = document.getElementById('myNFTs');
+            nftsDiv.innerHTML = '<span class="loading"></span> Loading your collection...';
+            
+            try {
+                const response = await fetch('/api/my-nfts/' + wallet);
+                const nfts = await response.json();
+                
+                if (nfts.length === 0) {
+                    nftsDiv.innerHTML = '<p style="color:#666; grid-column:1/-1; text-align:center;">No NFTs claimed yet. Visit an event to claim your first Geo-NFT!</p>';
+                    return;
+                }
+                
+                nftsDiv.innerHTML = nfts.map(nft => 
+                    '<div class="nft-card">' +
+                    '<img src="' + (nft.eventImage || 'https://via.placeholder.com/100') + '" alt="NFT">' +
+                    '<h4>' + nft.eventName + '</h4>' +
+                    '<p style="font-size:0.8em;">' + new Date(nft.claimedAt).toLocaleDateString() + '</p>' +
+                    '<p style="font-size:0.7em;">' + (nft.nftAddress || '').substring(0,10) + '...</p>' +
+                    '</div>'
+                ).join('');
+                
+            } catch (error) {
+                nftsDiv.innerHTML = '<div class="error">Error loading NFTs: ' + error.message + '</div>';
+            }
+        }
+        
+        async function simulateAttendance() {
+            // Set mock location (Lagos Tech Summit coordinates)
+            currentLocation = {
+                lat: 6.5244,
+                lng: 3.3792
+            };
+            
+            document.getElementById('locationDisplay').innerHTML = 
+                '📍 Simulated location: Lagos Tech Summit';
+            
+            document.getElementById('eventSelect').value = 'lagos-tech-summit-2024';
+            document.getElementById('wallet').value = 'Demo_Wallet_' + Math.random().toString(36).substring(7);
+            
+            const demoResult = document.getElementById('demoResult');
+            demoResult.innerHTML = '<div class="success">✅ Simulated location set! Click "Verify Location" to continue.</div>';
+        }
+    </script>
+</body>
+</html>
